@@ -12,6 +12,7 @@ export interface PageProps {
 
 export interface PageState {
   width?: number;
+  resize_timer?: any;
 }
 
 export class Page extends React.Component<PageProps, PageState> {
@@ -19,8 +20,40 @@ export class Page extends React.Component<PageProps, PageState> {
   constructor(props:any) {
     super(props);
     this.state = {
-      width: document.body.offsetWidth
+      width: document.body.offsetWidth,
+      resize_timer: 0
     }
+  }
+
+  _handleResize = () => {
+    this.setState(
+      (prevState, props) => {
+        return {
+          width: window.innerWidth
+        };
+      }
+    );
+  }
+
+  _debounceResize = () => {
+    const self = this;
+    clearTimeout(this.state.resize_timer);
+
+    this.setState(
+      (prevState, props) => {
+        return {
+          resize_timer: setTimeout(self._handleResize.bind(self), 100)
+        };
+      }
+    );
+  }
+
+  componentDidMount() {
+    window.addEventListener("resize", this._debounceResize.bind(this), false);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this._debounceResize.bind(this));
   }
 
   render() {
@@ -33,44 +66,33 @@ export class Page extends React.Component<PageProps, PageState> {
           uncutPages={false}
           showSwipeHint={true}
           showTouchHint={true}
-          height={1200}
+          height={1450}
           width={width}
           loopForever={true}
           className={'react-flip-page'}
           pageBackground={"#fff url('./img/notebook.jpg') top center / cover no-repeat scroll"}
           >
           <article>
-            <h2>CEO Questionaires</h2>
+            <h2>Security</h2>
             <div className={"question-point"}>
-              <div>&bull;How do you feel for potato ? I know kartofell is not here</div>
-              <div>&bull;How do you feel for potato ?</div>
-              <div>&bull;How do you feel for potato ?</div>
-              <div>&bull;How do you feel for potato ?</div>
-              <div>&bull;How do you feel for potato ?</div>
+              <ol>
+                <li>Sample Question 1</li>
+                <li>Sample Question 2</li>
+                <li>Sample Question 3</li>
+              </ol>
             </div>
           </article>
           <article>
-            <h2>CEO Questionaires</h2>
+            <h2>SPM</h2>
             <div className={"question-point"}>
-              <div>&bull;How do you feel for potato ?</div>
-              <div>&bull;How do you feel for potato ?</div>
-              <div>&bull;How do you feel for potato ?</div>
-              <div>&bull;How do you feel for potato ?</div>
-              <div>&bull;How do you feel for potato ?</div>
-            </div>
-          </article>
-          <article>
-            <h2>CEO Questionaires</h2>
-            <div className={"question-point"}>
-              <div>&bull;How do you feel for potato ?</div>
-              <div>&bull;How do you feel for potato ?</div>
-              <div>&bull;How do you feel for potato ?</div>
-              <div>&bull;How do you feel for potato ?</div>
-              <div>&bull;How do you feel for potato ?</div>
+              <ol>
+                <li>Sample Question 4</li>
+                <li>Sample Question 5</li>
+                <li>Sample Question 6</li>
+              </ol>
             </div>
           </article>
         </ReactFlipPage>
-        <Progressive/>
       </div>
     );
   }
